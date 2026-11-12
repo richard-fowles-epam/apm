@@ -34,40 +34,38 @@ def test_dry_run_never_calls_gh(demo, monkeypatch, capsys):
     assert "dry-run" in capsys.readouterr().out
 
 
-def test_sanitize_neutralizes_mentions_and_refs(demo):
+def test_sanitize_removes_every_source_reference(demo):
     body = "\n".join(
         [
             "Ping @alice and @org/team, mail a@b.com.",
             "See #123, octo/repo#7 and https://github.com/microsoft/apm/issues/99.",
-            "Also [the PR](https://github.com/microsoft/apm/pull/5).",
-            "Keep `@code #1` as is.",
+            "Also [the PR](https://github.com/microsoft/apm/pull/5) and [`x.py`](https://github.com/microsoft/apm/blob/v1/x.py).",
+            "Reported by `@bob` in `microsoft/apm#2146`; keep `apm install --flag`.",
+            "Lives in microsoft/apm and https://github.com/Microsoft/APM.",
             "```",
             "@inside #2",
             "```",
         ]
     )
     out = demo.sanitize_body(body).splitlines()
-    assert out[0] == "Ping `@alice` and `@org/team`, mail a@b.com."
-    assert out[1] == "See `microsoft/apm#123`, `octo/repo#7` and `microsoft/apm#99`."
-    assert out[2] == "Also the PR (`microsoft/apm#5`)."
-    assert out[3] == "Keep `@code #1` as is."
-    assert out[5] == "@inside #2"
+    assert out[0] == "Ping a user and a user, mail a@b.com."
+    assert out[1] == "See a related issue, a related issue and a related issue."
+    assert out[2] == "Also the PR and `x.py`."
+    assert out[3] == "Reported by a user in a related issue; keep `apm install --flag`."
+    assert out[4] == "Lives in the project repository and the project repository."
+    assert out[6] == "@inside #2"
 
 
-@pytest.mark.parametrize("style", ["clickable", "code"])
-def test_demo_issue_is_marked_and_links_original(demo, style):
-    issue = {
-        "number": 42,
-        "title": "Thing",
-        "body": "hi @bob",
-        "author": {"login": "bob"},
-        "createdAt": "2025-01-02T00:00:00Z",
-    }
-    title, body = demo.build_demo_issue(issue, link_style=style)
-    url = "https://github.com/microsoft/apm/issues/42"
-    assert title == "[DEMO] Thing"
-    assert "Demo copy for the panel-review walkthrough. Not tracked work." in body
-    assert "<!-- apm-demo-source: microsoft/apm#42 -->" in body
-    assert (f"Original: {url}" in body) == (style == "clickable")
-    assert (f"Original: `{url}`" in body) == (style == "code")
-    assert "@bob" not in body.replace("`@bob`", "")
+def test_demo_issue_has_no_tie_to_source(demo):
+    issue = {"number": 42, "title": "Fix #12", "body": "hi @bob, see microsoft/apm#3"}
+    title, body = demo.build_demo_issue(issue)
+    assert title == "[DEMO] Fix a related issue"
+    assert "Demo issue for the panel-review walkthrough. Not tracked work." in body
+    for needle in ("microsoft", "github.com", "@bob", "#3", "42", "<!--"):
+        assert needle not in title + body
+
+
+def test_demo_issue_refuses_leftover_source_reference(demo):
+    issue = {"title": "T", "body": "```\npip install git+https://github.com/microsoft/apm\n```"}
+    with pytest.raises(demo.DemoError):
+        demo.build_demo_issue(issue)
