@@ -674,6 +674,7 @@ describe("Static file serving", () => {
         assert.ok(res.headers.get("content-type").includes("text/html"));
         assert.equal(res.headers.get("cache-control"), "no-cache");
         assert.ok(html.includes("window.__APM_DASHBOARD_REFRESH_INTERVAL_MS__=900000"));
+        assert.ok(html.includes('window.__APM_DASHBOARD_REPO__="test/repo"'));
     });
 
     it("GET /unknown-route returns HTML (SPA fallback)", async () => {

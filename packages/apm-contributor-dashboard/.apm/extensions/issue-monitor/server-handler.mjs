@@ -10,6 +10,7 @@ import { readFileSync, realpathSync } from "node:fs";
 import { isAbsolute, join, relative, resolve, sep, win32 } from "node:path";
 import { randomBytes } from "node:crypto";
 import { parsePanelReview, extractFollowUpItems, parseTriageAdvice } from "./logic.mjs";
+import { toInlineScriptJson } from "./repo-config.mjs";
 
 // Sanitize user-controlled strings before interpolation into session prompts.
 // Strips backticks and angle brackets to prevent prompt injection via
@@ -243,7 +244,7 @@ async function readBodyWithLimit(req, pathname) {
  * @param {function} deps.getPrData - () => array
  * @param {function} deps.getLastUpdated - () => string|null
  * @param {function} deps.getLastError - () => string|null
- * @param {string}  deps.repo - e.g. "microsoft/apm"
+ * @param {string}  deps.repo - e.g. "richard-fowles-epam/apm"
  * @param {string}  deps.distDir - absolute path to dist/ folder
  */
 export function createHandler(deps) {
@@ -869,7 +870,7 @@ query($owner: String!, $repo: String!, $cursor: String) {
             // Inject CSRF token into HTML so the client can send it with write requests
             try {
                 let html = readFileSync(join(distDir, "index.html"), "utf-8");
-                const runtimeScript = `<script>window.__CANVAS_TOKEN__="${csrfToken}";window.__APM_DASHBOARD_REFRESH_INTERVAL_MS__=${refreshIntervalMs};</script>`;
+                const runtimeScript = `<script>window.__CANVAS_TOKEN__="${csrfToken}";window.__APM_DASHBOARD_REFRESH_INTERVAL_MS__=${refreshIntervalMs};window.__APM_DASHBOARD_REPO__=${toInlineScriptJson(repo)};</script>`;
                 html = html.replace("</head>", `${runtimeScript}</head>`);
                 res.writeHead(200, { "Content-Type": "text/html", "Cache-Control": "no-cache" });
                 res.end(html);

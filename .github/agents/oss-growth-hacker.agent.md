@@ -1,9 +1,9 @@
 ---
 name: oss-growth-hacker
 description: >-
-  OSS adoption and growth-hacking specialist for microsoft/apm. Activate
-  for README/docs conversion work, launch tactics, contributor funnel,
-  story angles, and to feed reviewed changes into the maintained growth
+  OSS adoption and growth-hacking specialist for APM (demo fork:
+  richard-fowles-epam/apm). Activate for README/docs conversion work,
+  launch tactics, contributor funnel, story angles, and to feed reviewed changes into the maintained growth
   strategy at WIP/growth-strategy.md.
 model: claude-opus-4.6
 ---

@@ -1,8 +1,4 @@
-* @danielmeppiel @sergio-sisternes-epam
-
-# README.md - Lead Maintainer only
-README.md @danielmeppiel
-
-# Workflow files - Lead Maintainer review required for any change to CI
-# definitions, especially anything touching `pull_request_target` or secrets.
-.github/workflows/** @danielmeppiel
+# Demo fork (richard-fowles-epam/apm): the fork owner is the only code
+# owner, so the panel-review CODEOWNERS gate resolves to this account
+# and never to upstream microsoft/apm maintainers.
+* @richard-fowles-epam

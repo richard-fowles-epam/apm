@@ -5,6 +5,7 @@ import StatsCards from "../StatsCards";
 import TriageTable from "./TriageTable";
 import TriageDetail from "./TriageDetail";
 import Pagination from "../Pagination";
+import { dashboardRepo } from "../../config";
 
 function decisionKey(decision) {
   if (!decision) return "";
@@ -118,7 +119,7 @@ export default function TriageTab() {
       <Show when={!isLoading() || items().length > 0} fallback={
         <div class="loading-state">
           <div class="spinner"></div>
-          <p>Fetching triage data from microsoft/apm...</p>
+          <p>Fetching triage data from {dashboardRepo}...</p>
         </div>
       }>
         <Show when={items().length > 0} fallback={

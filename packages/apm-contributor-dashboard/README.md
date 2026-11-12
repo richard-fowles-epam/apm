@@ -1,11 +1,13 @@
 # APM Contributor Dashboard
 
 A live GitHub Copilot CLI canvas extension that provides an interactive
-contributor dashboard for the microsoft/apm repository. It monitors
+contributor dashboard for the `richard-fowles-epam/apm` demo fork. It monitors
 issues, pull requests, CI pipelines, and panel reviews in real time.
 
-> **Note:** This dashboard is currently scoped to `microsoft/apm`. It
-> reads issues and PRs from that repository only.
+> **Note:** This dashboard reads issues and PRs from, and applies the
+> `panel-review` label in, `richard-fowles-epam/apm` by default. Set
+> `APM_DASHBOARD_REPO=<owner>/<name>` before starting Copilot CLI to point it
+> at another fork. Invalid values and `microsoft/apm` fall back to the default.
 
 ## Features
 
@@ -33,8 +35,8 @@ An accepted label alone does not indicate panel approval.
 apm experimental enable canvas
 
 # Approve the canvas extension in apm.yml, then install
-apm approve microsoft/apm/packages/apm-contributor-dashboard
-apm install microsoft/apm/packages/apm-contributor-dashboard
+apm approve richard-fowles-epam/apm/packages/apm-contributor-dashboard
+apm install richard-fowles-epam/apm/packages/apm-contributor-dashboard
 ```
 
 The deployed `.github/extensions/` directory is auto-generated and should

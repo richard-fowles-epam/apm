@@ -3,7 +3,7 @@ name: autopilot-pr-review-worker
 activation_card: on
 description: >-
   Use this skill to run a multi-persona expert advisory review on a labelled
-  pull request in microsoft/apm. panel-mode (full | lean | delta) selects a
+  pull request in richard-fowles-epam/apm (demo fork). panel-mode (full | lean | delta) selects a
   surface-gated roster plus a CEO synthesizer; omitted or unknown mode is
   lean. Do not spawn inactive stubs. The orchestrator is the sole writer
   to the PR: ONE recommendation comment, no verdict labels, no merge
@@ -34,13 +34,13 @@ this Enter card with every field filled. Missing field -> stop.
 skill: autopilot-pr-review-worker
 skill_path: <resolved directory of this SKILL.md>
 mode: run
-subject: microsoft/apm#<pr-number>
+subject: richard-fowles-epam/apm#<pr-number>
 path: review
 intent: advise one already-selected PR
 origin: unattended | actor-session
 write: on | off
 debug: off | on
-repo: microsoft/apm
+repo: richard-fowles-epam/apm
 pr: <positive integer>
 invocation: agentic-workflow | actor-session
 invocation_mode: session-review | direct-user-review | composed-implementation-review
@@ -75,7 +75,7 @@ After the panel, emit this Exit receipt:
 
 ```text
 skill: autopilot-pr-review-worker
-subject: microsoft/apm#<pr-number>
+subject: richard-fowles-epam/apm#<pr-number>
 path: review
 write: on | off
 posted: yes | no
@@ -84,6 +84,14 @@ approved: n/a
 panel-mode: full | lean | delta
 personas_spawned: <comma-separated slugs>
 ```
+
+## Target repository (demo fork)
+
+This copy targets the `richard-fowles-epam/apm` demo fork only.
+Pass `--repo richard-fowles-epam/apm` to every `gh` command and use
+`repos/richard-fowles-epam/apm/...` for every `gh api` path. Never
+read PRs from, or write to, `microsoft/apm`. If the resolved
+repository is anything else -> stop with `posted: no`.
 
 ## Architecture invariants
 
@@ -554,7 +562,7 @@ no comment can be rendered, an explicit `noop` (step 9) -- are emitted.
    of the people who will act on it. Run:
 
    ```
-   gh pr view <PR_NUMBER> --json author,reviewRequests,headRefOid
+   gh pr view <PR_NUMBER> --repo richard-fowles-epam/apm --json author,reviewRequests,headRefOid
    ```
 
    Build `notify_audience` as the deduplicated list:
@@ -582,8 +590,8 @@ no comment can be rendered, an explicit `noop` (step 9) -- are emitted.
    not true, requesting `@me` as a supplemental reviewer is a hard
    gate and the public signal of which user is running the review.
    If `@me` is not the PR author and is not already a requested
-   reviewer, request `@me` (`gh pr edit --add-reviewer @me`) and
-   verify. If GitHub rejects the request, record the limitation,
+   reviewer, request `@me` (`gh pr edit <PR_NUMBER> --repo richard-fowles-epam/apm
+   --add-reviewer @me`) and verify. If GitHub rejects the request, record the limitation,
    leave reviewers unchanged, and continue. Never assign the PR.
    Never remove an existing reviewer. If `@me` is the PR author,
    record `self-review-red-flag` and skip the request.

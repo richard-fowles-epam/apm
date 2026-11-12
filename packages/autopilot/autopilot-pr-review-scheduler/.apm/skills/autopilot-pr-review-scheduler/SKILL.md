@@ -2,8 +2,8 @@
 name: autopilot-pr-review-scheduler
 activation_card: on
 description: >-
-  Queue microsoft/apm pull requests labelled `panel-review` (or an
-  explicit named list) and fan them out through an isolated pool
+  Queue richard-fowles-epam/apm (demo fork) pull requests labelled
+  `panel-review` (or an explicit named list) and fan them out through an isolated pool
   (default 2) of autopilot-pr-review-worker sessions. Advisory only.
   Never implements. Never composes autopilot-pr-merge-worker. Never
   review every open PR. Works in a local session, Copilot App
@@ -35,12 +35,12 @@ this Enter card with every field filled. Missing field -> stop.
 skill: autopilot-pr-review-scheduler
 skill_path: <resolved directory of this SKILL.md>
 mode: run
-subject: microsoft/apm
+subject: richard-fowles-epam/apm
 path: review
 intent: select accepted review PRs and fan out review workers
 origin: unattended | actor-session
 write: off
-repo: microsoft/apm
+repo: richard-fowles-epam/apm
 fanout_limit: <positive integer>
 invocation: agentic-workflow | actor-session
 ```
@@ -62,13 +62,21 @@ After the run, emit this Exit receipt:
 
 ```text
 skill: autopilot-pr-review-scheduler
-subject: microsoft/apm
+subject: richard-fowles-epam/apm
 path: review
 write: off
 queued: <integer>
 spawned: <integer>
 approved: n/a
 ```
+
+## Target repository (demo fork)
+
+This copy targets the `richard-fowles-epam/apm` demo fork only.
+Pass `--repo richard-fowles-epam/apm` to every `gh` command and use
+`repos/richard-fowles-epam/apm/...` for every `gh api` path. Never
+read PRs from, or write to, `microsoft/apm`. If the resolved
+repository is anything else -> stop.
 
 ## Invocation
 
@@ -123,8 +131,8 @@ Never list all open PRs. Never fall back to an unfiltered
 Default (authenticated `gh`):
 
 ```
-gh pr list --state open --label panel-review --json number,title,isDraft,labels,updatedAt
-gh pr list --state open --label status/accepted --json number,title,isDraft,labels,updatedAt
+gh pr list --state open --label panel-review --json number,title,isDraft,labels,updatedAt --repo richard-fowles-epam/apm
+gh pr list --state open --label status/accepted --json number,title,isDraft,labels,updatedAt --repo richard-fowles-epam/apm
 ```
 
 Deduplicate by number. Skip drafts unless the caller named them.
