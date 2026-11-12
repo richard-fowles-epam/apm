@@ -66,15 +66,21 @@ python3 demo/panel-review/setup_demo.py all                 # dry-run
 python3 demo/panel-review/setup_demo.py all --apply
 ```
 
-This creates `panel-review`, `status/accepted` and `demo`. It then copies
-five upstream issues as `[DEMO] ...` issues: microsoft/apm #2986, #3593,
-#3351, #3056 and #3110. Each copy has a demo banner, the original link and
-a hidden source marker, so re-running the script skips issues it already
-copied. Comments, labels and assignees are not copied. Mentions and
-cross-references are shown as code, so nobody is notified.
+This creates `panel-review`, `status/accepted` and `demo`. It then reads
+the title and body of five upstream issues (microsoft/apm #2986, #3593,
+#3351, #3056 and #3110) and creates `[DEMO] ...` issues in the fork with no
+link back to the source:
 
-A clickable original link can add a "mentioned" event on the upstream
-issue. Use `--link-style code` to avoid that.
+- A demo banner replaces any source link, author or date.
+- `@mentions` become "a user" and issue/PR references or URLs become
+  "a related issue", so nobody is notified and no upstream timeline event
+  is created.
+- Other links to the source repository keep only their text.
+- The script refuses to create an issue if `microsoft/apm` still appears
+  anywhere, including in code blocks.
+
+Comments, labels and assignees are not copied. Re-running the script skips
+any `demo`-labelled issue whose title already exists.
 
 ### 5. Copilot authentication (secret)
 
