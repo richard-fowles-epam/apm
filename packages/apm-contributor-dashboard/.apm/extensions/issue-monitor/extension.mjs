@@ -11,8 +11,9 @@ import { joinSession, createCanvas } from "@github/copilot-sdk/extension";
 import { classifyIssue, classifyPrStatus, escapeHtml, matchPrsToIssues, classifyPrForTable, classifyPipeline, classifyPanel, parsePanelCounts, parsePanelReview } from "./logic.mjs";
 import { createHandler } from "./server-handler.mjs";
 import { getNextRefreshDelayMs, resolveRefreshIntervalMs } from "./refresh-config.mjs";
+import { resolveDashboardRepo } from "./repo-config.mjs";
 
-const REPO = "microsoft/apm";
+const REPO = resolveDashboardRepo(process.env.APM_DASHBOARD_REPO);
 const REFRESH_INTERVAL_MS = resolveRefreshIntervalMs(
     process.env.APM_DASHBOARD_REFRESH_INTERVAL_MINUTES,
 );

@@ -6,6 +6,7 @@ import StatsCards from "../StatsCards";
 import PrTable from "./PrTable";
 import PrDetail from "./PrDetail";
 import Pagination from "../Pagination";
+import { dashboardRepo } from "../../config";
 
 export default function PrsTab() {
   const [page, setPage] = createSignal(0);
@@ -119,7 +120,7 @@ export default function PrsTab() {
       <Show when={!isLoading() || prs().length > 0} fallback={
         <div class="loading-state">
           <div class="spinner"></div>
-          <p>Fetching pull requests from microsoft/apm...</p>
+          <p>Fetching pull requests from {dashboardRepo}...</p>
         </div>
       }>
         <Show when={prs().length > 0} fallback={<div class="empty">No open pull requests found.</div>}>

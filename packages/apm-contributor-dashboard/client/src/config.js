@@ -1,4 +1,13 @@
 const DEFAULT_REFRESH_INTERVAL_MS = 15 * 60 * 1000;
+const DEFAULT_DASHBOARD_REPO = "richard-fowles-epam/apm";
+
+const configuredRepo = typeof window !== "undefined"
+  ? window.__APM_DASHBOARD_REPO__
+  : undefined;
+
+export const dashboardRepo = typeof configuredRepo === "string" && /^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/.test(configuredRepo)
+  ? configuredRepo
+  : DEFAULT_DASHBOARD_REPO;
 
 const configuredInterval = typeof window !== "undefined"
   ? Number(window.__APM_DASHBOARD_REFRESH_INTERVAL_MS__)

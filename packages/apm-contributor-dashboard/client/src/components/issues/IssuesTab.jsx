@@ -4,6 +4,7 @@ import StatsCards from "../StatsCards";
 import IssueTable from "./IssueTable";
 import IssueDetail from "./IssueDetail";
 import Pagination from "../Pagination";
+import { dashboardRepo } from "../../config";
 
 const prioOrder = { P0: 0, P1: 1, P2: 2, P3: 3 };
 const typeOrder = { bug: 0, feature: 1, chore: 2 };
@@ -121,7 +122,7 @@ export default function IssuesTab() {
       <Show when={!issueResource.loading || issues().length > 0} fallback={
         <div class="loading-state">
           <div class="spinner"></div>
-          <p>Fetching issues from microsoft/apm...</p>
+          <p>Fetching issues from {dashboardRepo}...</p>
         </div>
       }>
         <Show when={issues().length > 0} fallback={<div class="empty">No open issues found.</div>}>
