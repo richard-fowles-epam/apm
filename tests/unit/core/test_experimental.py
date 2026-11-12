@@ -617,3 +617,18 @@ class TestPackageRegistryFlagRegistration:
         from apm_cli.core.experimental import FLAGS
 
         assert FLAGS["registries"].name == "registries"
+
+
+class TestReferenceDocsCoverage:
+    def test_reference_page_lists_every_registered_flag(self) -> None:
+        from pathlib import Path
+
+        from apm_cli.core.experimental import FLAGS
+
+        page = (
+            Path(__file__).resolve().parents[3] / "docs/src/content/docs/reference/experimental.md"
+        ).read_text(encoding="utf-8")
+        section = page.split("## Available flags", 1)[1].split("\n## ", 1)[0]
+        documented = set(re.findall(r"^\| `([a-z0-9-]+)`", section, flags=re.MULTILINE))
+        expected = {name.replace("_", "-") for name in FLAGS}
+        assert expected - documented == set()
